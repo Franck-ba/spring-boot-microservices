@@ -42,6 +42,7 @@ public class CustomerService {
     }
 
     public String deleteAllCustomers() {
+        customerRepository.deleteAll();
         return "All customers deleted Successfully !!!";
     }
 
