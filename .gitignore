@@ -1,1 +1,10 @@
 .idea/
+./prometheus/data
+./customer-service/target
+./admin-server/target
+./common-service/target
+./config-server/target
+./eureka-server/target
+./oauth2-server/target
+./order-service/target
+./zuul-server/target
