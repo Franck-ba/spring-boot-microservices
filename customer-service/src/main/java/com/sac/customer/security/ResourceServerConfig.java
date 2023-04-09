@@ -21,6 +21,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/v1/api/customer/delete/**").hasRole("ADMIN")
+                .antMatchers("/actuator/**").permitAll()
                 .anyRequest().permitAll();
     }
 

@@ -86,7 +86,7 @@ services:
     container_name: zuul-server
     build: ./zuul-server
     ports:
-      - 8080:8080
+      - 8089:8080
     depends_on:
       - eureka-server
     entrypoint: /bin/sh
@@ -103,6 +103,8 @@ services:
     build: ./config-server
     expose:
       - 8080
+    ports:
+      - "8088:8080"
     depends_on:
       - eureka-server
     entrypoint: /bin/sh
@@ -117,6 +119,8 @@ services:
     build: oauth2-server
     expose:
       - 8080
+    ports:
+      - "8087:8080"
     depends_on:
       - config-server
     entrypoint: /bin/sh
@@ -132,6 +136,8 @@ services:
     build: ./customer-service
     expose:
       - 8080
+    ports:
+      - "8765:8080"
     depends_on:
       - eureka-server
     entrypoint: /bin/sh
@@ -146,6 +152,8 @@ services:
     build: ./order-service
     expose:
       - 8080
+    ports:
+      - "8764:8080"
     depends_on:
       - eureka-server
     entrypoint: /bin/sh
@@ -165,6 +173,4 @@ services:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - ./prometheus/data:/prometheus
     restart: unless-stopped
-
-
 

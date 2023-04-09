@@ -1,13 +1,22 @@
+spring:
+  application:
+    name: admin-server
 server:
   port: 8080
-
-
-
-
-
-
-
-
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info, health, prometheus
+        enabled: true
+zuul:
+  ribbon:
+    eager-load:
+      enabled: true
+logging:
+  level:
+    com.netflix: WARN
+    org.springframework.web: WARN
+    com.sac: DEBUG
 
 

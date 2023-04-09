@@ -1,5 +1,5 @@
 .idea/
-./prometheus/data
+prometheus/data
 ./customer-service/target
 ./admin-server/target
 ./common-service/target

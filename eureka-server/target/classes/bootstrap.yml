@@ -12,7 +12,10 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*"
+        include: prometheus,info,health
+  endpoint:
+    prometheus:
+      enabled: true
     health:
       show-details: always
 
