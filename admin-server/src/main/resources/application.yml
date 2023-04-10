@@ -7,8 +7,10 @@ management:
   endpoints:
     web:
       exposure:
-        include: info, health, prometheus
-        enabled: true
+        include: "*"
+  endpoint:
+    prometheus:
+      enabled: true
 zuul:
   ribbon:
     eager-load:

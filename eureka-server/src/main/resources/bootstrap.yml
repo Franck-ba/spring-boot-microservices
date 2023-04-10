@@ -12,12 +12,10 @@ management:
   endpoints:
     web:
       exposure:
-        include: prometheus,info,health
+        include: "*"
   endpoint:
     prometheus:
       enabled: true
-    health:
-      show-details: always
 
 
 #Setting logging levels

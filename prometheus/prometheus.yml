@@ -23,12 +23,10 @@ scrape_configs:
     scrape_interval: 5s
     static_configs:
       - targets:
-        - 'localhost:8765'
+        - 'customer-service:8765'
         - 'order-service:8764'
         - 'admin-server:8081'
         - 'eureka-server:8082'
         - 'oauth2-server:8087'
         - 'config-server:8088'
         - 'zuul-server:8089'
-        - 'kafka:9092'
-        - 'zookeeper:2181'
