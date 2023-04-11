@@ -9,6 +9,8 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
     ports:
       - "2181:2181"
+    networks:
+      - spring-boot-microservice
 
   # https://hub.docker.com/r/confluentinc/cp-kafka/
   kafka:
@@ -32,11 +34,13 @@ services:
         kafka.producer.async.DefaultEventHandler=INFO,
         state.change.logger=INFO
     ports:
-      - 9092:9092
+      - "9092:9092"
     depends_on:
       - zookeeper
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - spring-boot-microservice
 
   mysql:
     container_name: mysql
@@ -46,19 +50,21 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_ROOT_HOST: '%'
     ports:
-      - 3306:3306
+      - "3306:3306"
     #expose:
     #  - 3306
     restart: always
     volumes:
       - ./sql:/docker-entrypoint-initdb.d
+    networks:
+      - spring-boot-microservice
 
 
   admin-server:
     container_name: admin-server
     build: ./admin-server
     ports:
-      - 8081:8080
+      - "8081:8081"
     depends_on:
       - mysql
     entrypoint: /bin/sh
@@ -67,101 +73,107 @@ services:
       while ! (nc -z mysql 3306); do sleep 5; echo 'Waiting for database to start-up...'; done;
       java -jar  /app.jar
       "
+    networks:
+      - spring-boot-microservice
 
   eureka-server:
     container_name: eureka-server
     build: ./eureka-server
     ports:
-      - 8082:8080
+      - "8082:8082"
     depends_on:
       - admin-server
     entrypoint: /bin/sh
     command: >
       -c "
-      while ! (nc -z admin-server 8080); do sleep 5; echo 'Waiting for admin-server to start-up...'; done;
+      while ! (nc -z admin-server 8081); do sleep 5; echo 'Waiting for admin-server to start-up...'; done;
       java -jar  /app.jar
       "
+    networks:
+      - spring-boot-microservice
 
   zuul-server:
     container_name: zuul-server
     build: ./zuul-server
     ports:
-      - 8089:8080
+      - "8089:8089"
     depends_on:
       - eureka-server
     entrypoint: /bin/sh
     command: >
       -c "
-      while ! (nc -z eureka-server 8080); do sleep 5; echo 'Waiting for eureka-server to start-up...'; done;
+      while ! (nc -z eureka-server 8082); do sleep 5; echo 'Waiting for eureka-server to start-up...'; done;
       java -jar  /app.jar
       "
+    networks:
+      - spring-boot-microservice
 
 
 
   config-server:
     container_name: config-server
     build: ./config-server
-    expose:
-      - 8080
     ports:
-      - "8088:8080"
+      - "8088:8088"
     depends_on:
       - eureka-server
     entrypoint: /bin/sh
     command: >
       -c "
-      while ! (nc -z zuul-server 8080); do sleep 5; echo 'Waiting for zuul-server to start-up...'; done;
+      while ! (nc -z zuul-server 8089); do sleep 5; echo 'Waiting for zuul-server to start-up...'; done;
       java -jar  /app.jar
       "
+    networks:
+      - spring-boot-microservice
 
   oauth2-server:
     container_name: oauth2-server
     build: oauth2-server
-    expose:
-      - 8080
     ports:
-      - "8087:8080"
+      - "8087:8087"
     depends_on:
       - config-server
     entrypoint: /bin/sh
     command: >
       -c "
-      while ! (nc -z config-server 8080); do sleep 5; echo 'Waiting for config-server to start-up...'; done;
+      while ! (nc -z config-server 8088); do sleep 5; echo 'Waiting for config-server to start-up...'; done;
       java -jar  /app.jar
       "
+    networks:
+      - spring-boot-microservice
 
 
   customer-service:
     container_name: customer-service
     build: ./customer-service
-    expose:
-      - 8080
     ports:
-      - "8765:8080"
+      - "8765:8765"
     depends_on:
       - eureka-server
     entrypoint: /bin/sh
     command: >
       -c "
-      while ! (nc -z oauth2-server 8080); do sleep 5; echo 'Waiting for oauth2-server to start-up...'; done;
+      while ! (nc -z oauth2-server 8087); do sleep 5; echo 'Waiting for oauth2-server to start-up...'; done;
       java -jar  /app.jar
       "
+    networks:
+      - spring-boot-microservice
 
   order-service:
     container_name: order-service
     build: ./order-service
-    expose:
-      - 8080
     ports:
-      - "8764:8080"
+      - "8764:8764"
     depends_on:
       - eureka-server
     entrypoint: /bin/sh
     command: >
       -c "
-      while ! (nc -z customer-service 8080); do sleep 5; echo 'Waiting for customer-service to start-up...'; done;
+      while ! (nc -z customer-service 8765); do sleep 5; echo 'Waiting for customer-service to start-up...'; done;
       java -jar  /app.jar
       "
+    networks:
+      - spring-boot-microservice
 
 
   prometheus:
@@ -173,4 +185,29 @@ services:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - ./prometheus/data:/prometheus
     restart: unless-stopped
+    networks:
+      - spring-boot-microservice
+
+
+  grafana:
+    image: grafana/grafana-oss
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    restart: unless-stopped
+    networks:
+      - spring-boot-microservice
+
+volumes:
+  grafana-data:
+
+
+networks:
+  spring-boot-microservice:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.23.0.0/24
 

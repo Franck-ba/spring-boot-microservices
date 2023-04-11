@@ -17,10 +17,13 @@ management:
     web:
       exposure:
         include: "*"
+  endpoint:
+    prometheus:
+      enabled: true
 
 
 server:
-  port: 8080
+  port: 8089
 
 
 spring:
@@ -34,7 +37,7 @@ eureka:
     registerWithEureka: true
     fetchRegistry: true
     service-url:
-      defaultZone: http://eureka-server:8080/eureka/
+      defaultZone: http://eureka-server:8082/eureka/
 
 
 

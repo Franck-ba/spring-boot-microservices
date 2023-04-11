@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8765
 
 spring:
   application:
@@ -11,12 +11,12 @@ spring:
     config:
       enabled: true
       hostname: config-server
-      uri: http://config-server:8080
+      uri: http://config-server:8088
       fail-fast: false
   boot:
     admin:
       client:
-        url: http://admin-server:8080
+        url: http://admin-server:8081
 management:
   endpoints:
     web:
@@ -25,12 +25,16 @@ management:
   endpoint:
     prometheus:
       enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
 eureka:
   client:
     registerWithEureka: true
     fetchRegistry: true
     service-url:
-      defaultZone: http://eureka-server:8080/eureka/
+      defaultZone: http://eureka-server:8082/eureka/
     instance-info-replication-interval-seconds: 30
     registry-fetch-interval-seconds: 30
 zuul:

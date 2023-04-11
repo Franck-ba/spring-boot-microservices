@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8087
 
 zuul:
   ribbon:
@@ -34,7 +34,7 @@ eureka:
     registerWithEureka: true
     fetchRegistry: true
     service-url:
-      defaultZone: http://eureka-server:8080/eureka/
+      defaultZone: http://eureka-server:8082/eureka/
     instance-info-replication-interval-seconds: 30
     registry-fetch-interval-seconds: 30
 
