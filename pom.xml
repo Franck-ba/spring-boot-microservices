@@ -51,7 +51,7 @@
                 <artifactId>spring-boot-starter-actuator</artifactId>
                 <version>2.2.4.RELEASE</version>
             </dependency>
-            <!-- Micrometer Prometheus registry  -->
+            <!-- Micrometer Prometheus Registry  -->
             <dependency>
                 <groupId>io.micrometer</groupId>
                 <artifactId>micrometer-registry-prometheus</artifactId>

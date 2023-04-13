@@ -150,6 +150,8 @@ services:
       - "8765:8765"
     depends_on:
       - eureka-server
+ #   volumes:
+ #     - customer-service_logs:/var/logs
     entrypoint: /bin/sh
     command: >
       -c "
@@ -196,7 +198,6 @@ services:
       - "3000:3000"
     volumes:
       - grafana-data:/var/lib/grafana
-      - ./grafana/grafana-config.yml:/etc/grafana/provisioning/datasources
     environment:
       - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
       - GF_AUTH_ANONYMOUS_ENABLED=true
@@ -238,13 +239,16 @@ services:
     container_name: promtail
     image: grafana/promtail:2.8.0
     volumes:
-      - ./grafana/promtail/promtail-promtail-config.yml:/etc/promtail/promtail-config.yml
-      - /var/log:/var/log
+      - ./grafana/promtail/promtail-config.yml:/etc/promtail/promtail-config.yml
+#      - customer-service_logs:/var/logs
+    depends_on:
+      - loki
     networks:
       - spring-boot-microservice
 
 volumes:
   grafana-data:
+#  customer-service_logs:
 
 
 networks:

@@ -16,3 +16,18 @@ scrape_configs:
         labels:
           job: varlogs
           __path__: /var/log/*log
+
+  - job_name: customer-service
+    static_configs:
+      - targets:
+          - customer-service:8765
+        labels:
+          job: spring-actuator
+          __path__: /var/log/*log
+  - job_name: admin-server
+    static_configs:
+      - targets:
+          - admin-server:8081
+        labels:
+          job: spring-actuator
+          __path__: /var/log/*log

@@ -31,15 +31,24 @@ schema_config:
        prefix: index_
        period: 24h
 
-scrape_configs:
-  - job_name: customer-service
-    pipeline_stages:
-    static_configs:
-      - targets:
-          - customer-service:8765
-        labels:
-          job: spring-actuator
-          __path__: /var/log/syslog
+
+storage_config:
+  boltdb_shipper:
+    active_index_directory: /loki/index
+    cache_location: /loki/index_cache
+    shared_store: filesystem
+  filesystem:
+    directory: /data/loki/chunks
+
+#scrape_configs:
+#  - job_name: customer-service
+#    pipeline_stages:
+#    static_configs:
+#      - targets:
+#          - customer-service:8765
+#        labels:
+#          job: spring-actuator
+#          __path__: /var/log/syslog
 #ruler:
 #  alertmanager_url: http://localhost:9093
 # By default, Loki will send anonymous, but uniquely-identifiable usage and configuration
