@@ -235,14 +235,11 @@ services:
     networks:
       - spring-boot-microservice
 
-  promtail:
-    container_name: promtail
-    image: grafana/promtail:2.8.0
+  logstash:
+    container_name: logstash
+    image: grafana/logstash-output-loki:2.8.0-amd64
     volumes:
-      - ./grafana/promtail/promtail-config.yml:/etc/promtail/promtail-config.yml
-#      - customer-service_logs:/var/logs
-    depends_on:
-      - loki
+      - ./logstash/logstash.conf:/home/logstash/
     networks:
       - spring-boot-microservice
 
