@@ -238,8 +238,18 @@ services:
   logstash:
     container_name: logstash
     image: grafana/logstash-output-loki:2.8.0-amd64
+    ports:
+      - "5044:5044"
+      - "5000:5000"
+      - "127.0.0.1:5001:5001/udp"
+      - "5002:5002"
+      - "9600:9600"
     volumes:
       - ./logstash/logstash.conf:/home/logstash/loki.conf
+#      - ./logstash/logstash.yml:/usr/share/logstash/config/logstash.yml
+#      - ./logstash/loki-test.conf:/home/logstash/loki-test.conf
+#      - ./logstash/logstash-sample.conf:/usr/share/logstash/config/logstash-sample.conf
+#      - ./logstash/logstash2.conf:/usr/share/logstash/pipeline/logstash.conf
     networks:
       - spring-boot-microservice
 
