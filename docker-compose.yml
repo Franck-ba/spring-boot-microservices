@@ -239,7 +239,7 @@ services:
     container_name: logstash
     image: grafana/logstash-output-loki:2.8.0-amd64
     volumes:
-      - ./logstash/logstash.conf:/home/logstash/
+      - ./logstash/logstash.conf:/home/logstash/loki.conf
     networks:
       - spring-boot-microservice
 
