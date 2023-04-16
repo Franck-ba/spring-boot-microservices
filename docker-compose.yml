@@ -246,6 +246,8 @@ services:
       - "9600:9600"
     volumes:
       - ./logstash/logstash.conf:/home/logstash/loki.conf
+      - ./logstash/pipelines.yml:/usr/share/logstash/config/pipelines.yml
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
 #      - ./logstash/logstash.yml:/usr/share/logstash/config/logstash.yml
 #      - ./logstash/loki-test.conf:/home/logstash/loki-test.conf
 #      - ./logstash/logstash-sample.conf:/usr/share/logstash/config/logstash-sample.conf
