@@ -1,7 +1,7 @@
 package com.sac.common.models;
 
 
-public class CustomerBean {
+public class CustomerDTO {
     private String name;
 
 

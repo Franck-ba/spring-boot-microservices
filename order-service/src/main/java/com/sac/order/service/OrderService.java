@@ -8,6 +8,7 @@ import com.sac.order.entity.ItemEntity;
 import com.sac.order.entity.OrderEntity;
 import com.sac.order.events.handlers.EventHandler;
 import com.sac.order.repository.OrderRepository;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,9 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import io.micrometer.core.instrument.Timer;
 
 @Service
 public class OrderService {
@@ -25,11 +29,24 @@ public class OrderService {
     @Autowired
     private EventHandler eventHandler;
 
-    public String createOrder(OrderBean orderBean) {
+    private final Timer myTimer;
 
-        OrderEntity orderEntity = createRequiredOrderDTOFromBean(orderBean);
-        orderEntity = orderRepository.save(orderEntity);
-        eventHandler.publishEvent(orderEntity);
+    public OrderService(MeterRegistry meterRegistry){
+        myTimer = Timer.builder("create.order.latency").
+                description("Latency of creating a new order").register(meterRegistry);
+    }
+
+    public String createOrder(OrderBean orderBean) {
+        long startTime = System.nanoTime();
+        try {
+            OrderEntity orderEntity = createRequiredOrderDTOFromBean(orderBean);
+            orderEntity = orderRepository.save(orderEntity);
+            eventHandler.publishEvent(orderEntity);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        long endTime = System.nanoTime();
+        myTimer.record(endTime - startTime, TimeUnit.NANOSECONDS);
         return  "Order created successfully !!!";
     }
 

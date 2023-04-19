@@ -30,3 +30,13 @@ scrape_configs:
         - 'oauth2-server:8087'
         - 'config-server:8088'
         - 'zuul-server:8089'
+
+## Alerting specifies settings related to the Alertmanager
+#alerting:
+#  alertmanagers:
+#    - static_configs:
+#        - targets:
+#            - 'alertmanager:9093'
+#
+#rule_files:
+#  - 'alert_rules.yml'

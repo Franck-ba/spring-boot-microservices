@@ -190,6 +190,17 @@ services:
     networks:
       - spring-boot-microservice
 
+#  alertmanager:
+#    image: prom/alertmanager:v0.25.0
+#    container_name: alertmanager
+#    volumes:
+#      - ./prometheus/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+#    ports:
+#      - "9093:9093"
+#    restart: unless-stopped
+#    networks:
+#      - spring-boot-microservice
+
 
   grafana:
     image: grafana/grafana:9.4.7
@@ -240,18 +251,10 @@ services:
     image: grafana/logstash-output-loki:2.8.0-amd64
     ports:
       - "5044:5044"
-      - "5000:5000"
-      - "127.0.0.1:5001:5001/udp"
-      - "5002:5002"
-      - "9600:9600"
     volumes:
       - ./logstash/logstash.conf:/home/logstash/loki.conf
       - ./logstash/pipelines.yml:/usr/share/logstash/config/pipelines.yml
       - ./logstash/pipeline:/usr/share/logstash/pipeline
-#      - ./logstash/logstash.yml:/usr/share/logstash/config/logstash.yml
-#      - ./logstash/loki-test.conf:/home/logstash/loki-test.conf
-#      - ./logstash/logstash-sample.conf:/usr/share/logstash/config/logstash-sample.conf
-#      - ./logstash/logstash2.conf:/usr/share/logstash/pipeline/logstash.conf
     networks:
       - spring-boot-microservice
 

@@ -1,2 +1,2 @@
-- pipeline.id: public-services_microservices
+- pipeline.id: spring-boot_microservices
   path.config: "/usr/share/logstash/pipeline/microservices.conf"
