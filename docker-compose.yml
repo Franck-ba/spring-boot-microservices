@@ -190,17 +190,6 @@ services:
     networks:
       - spring-boot-microservice
 
-#  alertmanager:
-#    image: prom/alertmanager:v0.25.0
-#    container_name: alertmanager
-#    volumes:
-#      - ./prometheus/alertmanager.yml:/etc/alertmanager/alertmanager.yml
-#    ports:
-#      - "9093:9093"
-#    restart: unless-stopped
-#    networks:
-#      - spring-boot-microservice
-
   grafana:
     image: grafana/grafana:9.4.7
     container_name: grafana
@@ -208,11 +197,13 @@ services:
       - "3000:3000"
     volumes:
       - grafana-data:/var/lib/grafana
-      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
     environment:
       - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_SMTP_ENABLED=true
+      - GF_SMTP_HOST=mailhog:1025
+      - GF_SMTP_FROM_ADDRESS=alertmanager@example.com
     entrypoint:
         - sh
         - -euc
